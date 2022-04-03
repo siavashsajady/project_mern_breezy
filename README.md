@@ -1,0 +1,1 @@
+## The Full Stack MERN Application called "Breezy" and it is a simple social media app that allows users to post interesting events that happened in their lives.Using React, Node.js, Express & MongoDB
