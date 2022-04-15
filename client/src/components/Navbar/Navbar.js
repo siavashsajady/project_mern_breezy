@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AppBar, Avatar, Button, Toolbar, Typography } from '@mui/material';
+import decode from 'jwt-decode';
+import * as actionType from '../../constants/actionTypes';
 import useStyles from './styles';
 import memories from '../../images/memories.png';
 
@@ -14,7 +16,7 @@ const Navbar = () => {
   const location = useLocation();
 
   const logout = () => {
-    dispatch({ type: 'LOGOUT' });
+    dispatch({ type: actionType.LOGOUT });
     navigate('/');
 
     setUser(null);
@@ -23,7 +25,12 @@ const Navbar = () => {
   useEffect(() => {
     const token = user?.token;
 
-    ///JWT ...
+    if (token) {
+      const decodedToken = decode(token);
+
+      if (decodedToken.exp * 1000 < new Date().getTime()) logout();
+    }
+
     setUser(JSON.parse(localStorage.getItem('profile')));
   }, [location]);
 
