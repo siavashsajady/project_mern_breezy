@@ -10,11 +10,10 @@ import {
   TextField,
   Button,
 } from '@material-ui/core';
-// import ChipInput from 'material-ui-chip-input';
 import Posts from '../Posts/Posts';
 import Form from '../Form/Form';
 import Pagination from '../Pagination/Pagination';
-import { getPosts } from '../../actions/posts';
+import { getPosts, getPostsBySearch } from '../../actions/posts';
 import useStyles from './styles';
 
 function useQuery() {
@@ -23,6 +22,7 @@ function useQuery() {
 
 const Home = () => {
   const [currentId, setCurrentId] = useState(null);
+  const [search, setSearch] = useState('');
   const dispatch = useDispatch();
   const query = useQuery();
   const navigate = useNavigate();
@@ -33,6 +33,20 @@ const Home = () => {
   useEffect(() => {
     dispatch(getPosts());
   }, [currentId, dispatch]);
+
+  const searchPost = () => {
+    if (search.trim()) {
+      dispatch(getPostsBySearch({ search }));
+    } else {
+      navigate('/');
+    }
+  };
+  const handleKeyPress = (e) => {
+    if (e.keyCode === 13) {
+      searchPost();
+    }
+  };
+
   return (
     <Grow in>
       <Container maxWidth='xl'>
@@ -57,9 +71,18 @@ const Home = () => {
                 variant='outlined'
                 label='Search'
                 fullWidth
-                value='TEST'
-                onChange={() => {}}
+                onKeyPress={handleKeyPress}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
               />
+              <Button
+                onClick={searchPost}
+                className={classes.searchButton}
+                variant='contained'
+                color='primary'
+              >
+                Search
+              </Button>
             </AppBar>
             <Form currentId={currentId} setCurrentId={setCurrentId} />
             <Paper elevation={6}>
