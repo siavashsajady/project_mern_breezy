@@ -37,6 +37,7 @@ const Home = () => {
   const searchPost = () => {
     if (search.trim()) {
       dispatch(getPostsBySearch({ search }));
+      navigate(`/posts/search?searchQuery=${search || 'none'}`);
     } else {
       navigate('/');
     }
