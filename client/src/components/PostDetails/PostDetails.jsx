@@ -8,7 +8,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getPost } from '../../actions/posts';
+import { getPost, getPostsBySearch } from '../../actions/posts';
 import useStyles from './styles';
 
 const PostDetails = () => {
@@ -22,6 +22,12 @@ const PostDetails = () => {
     dispatch(getPost(id));
   }, [id]);
 
+  useEffect(() => {
+    if (post) {
+      dispatch(getPostsBySearch({ search: 'none' }));
+    }
+  }, [post]);
+
   if (!post) return null;
 
   if (isLoading) {
@@ -31,6 +37,8 @@ const PostDetails = () => {
       </Paper>
     );
   }
+
+  const recomendedPosts = posts.filter(({ _id }) => _id === post._id);
 
   return (
     <Paper style={{ padding: '20px', borderRadius: '15px' }} elevation={6}>
@@ -68,6 +76,21 @@ const PostDetails = () => {
           />
         </div>
       </div>
+      {recomendedPosts.length && (
+        <div className={classes.section}>
+          <Typography gutterBottom variant='h5'>
+            You might also like:
+          </Typography>
+          <Divider />
+          <div className={classes.recomendedPosts}>
+            {recomendedPosts.map(
+              ({ title, message, name, likes, selectedFile, _id }) => (
+                <div>{title}</div>
+              )
+            )}
+          </div>
+        </div>
+      )}
     </Paper>
   );
 };
