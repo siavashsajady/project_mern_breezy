@@ -24,7 +24,9 @@ const PostDetails = () => {
 
   useEffect(() => {
     if (post) {
-      dispatch(getPostsBySearch({ search: 'none' }));
+      dispatch(
+        getPostsBySearch({ search: 'none', tags: post?.tags.join(',') })
+      );
     }
   }, [post]);
 
@@ -38,7 +40,9 @@ const PostDetails = () => {
     );
   }
 
-  const recomendedPosts = posts.filter(({ _id }) => _id === post._id);
+  const recomendedPosts = posts.filter(({ _id }) => _id !== post._id);
+
+  const openPost = (_id) => navigate(`/posts/${_id}`);
 
   return (
     <Paper style={{ padding: '20px', borderRadius: '15px' }} elevation={6}>
@@ -85,7 +89,13 @@ const PostDetails = () => {
           <div className={classes.recomendedPosts}>
             {recomendedPosts.map(
               ({ title, message, name, likes, selectedFile, _id }) => (
-                <div>{title}</div>
+                <div
+                  style={{ margin: '20px', cursor: 'pointer' }}
+                  onClick={() => openPost(_id)}
+                  key={_id}
+                >
+                  {title}
+                </div>
               )
             )}
           </div>
